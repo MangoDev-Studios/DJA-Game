@@ -1,5 +1,7 @@
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class StartingMenu : MonoBehaviour
 {
@@ -16,8 +18,13 @@ public class StartingMenu : MonoBehaviour
         Destroy(gameObject);
     }
 
-        void SpawnPrefab()
+    void SpawnPrefab()
     {
         Instantiate(StartingMenuPrefab, transform.position, Quaternion.identity);
+    }
+
+    public void NextScene()
+    {
+        SceneManager.LoadScene("GameScene");
     }
 }
