@@ -10,6 +10,7 @@ public class PlayerCam : MonoBehaviour
     float xRotation;
     float yRotation;
 
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
