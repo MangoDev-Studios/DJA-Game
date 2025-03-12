@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 8712120776256284824}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 522.722, y: -115.735214, z: 376.53403}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -42,7 +42,7 @@ LODGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8712120776256284824}
   serializedVersion: 2
-  m_LocalReferencePoint: {x: -0.24208331, y: 23.930742, z: -0.02810812}
+  m_LocalReferencePoint: {x: -0.24206972, y: 23.930742, z: -0.028125763}
   m_Size: 49.49956
   m_FadeMode: 0
   m_AnimateCrossFading: 0
@@ -130,7 +130,16 @@ LODGroup:
     - renderer: {fileID: 6614582600766125642}
   - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: 5009752766693380671}
+    - renderer: {fileID: 7555128516367701737}
+    - renderer: {fileID: 673522820717761664}
+    - renderer: {fileID: 309339578853187548}
+    - renderer: {fileID: 264449552248361674}
+  - screenRelativeHeight: 0.05
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5009752766693380671}
   m_Enabled: 1
 --- !u!136 &6355534336301870390
 CapsuleCollider:

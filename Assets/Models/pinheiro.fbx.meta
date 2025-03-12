@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 570931758a162ef42a490e2b2802a51b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: folhaspinha
     second: {fileID: 2100000, guid: 4c6043815286feb6d98d530f3f996b25, type: 2}
   materials:
