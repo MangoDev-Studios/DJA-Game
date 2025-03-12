@@ -19,7 +19,7 @@ public class PlayerMovementP2P : NetworkBehaviour
 
     [Header("Ground Check")]
     public float playerHeight;
-    public LayerMask wahtIsGround;
+    [SerializeField]private LayerMask wahtIsGround;
     bool grounded;
 
     public Transform orientation;
@@ -33,6 +33,8 @@ public class PlayerMovementP2P : NetworkBehaviour
 
     private void Start()
     {
+
+        wahtIsGround = LayerMask.GetMask("wahtIsGround");
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 

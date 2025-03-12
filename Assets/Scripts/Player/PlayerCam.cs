@@ -4,6 +4,7 @@ public class PlayerCam : MonoBehaviour
 {
     public float sensX;
     public float sensY;
+    private GameObject Player;
 
     public Transform orientation;
 
@@ -11,8 +12,12 @@ public class PlayerCam : MonoBehaviour
     float yRotation;
 
 
+
     private void Start()
     {
+        Player = GameObject.Find("Player(Clone)");
+        orientation = Player.transform.GetChild(1).transform;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;   
     }

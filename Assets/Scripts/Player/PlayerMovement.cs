@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        wahtIsGround = LayerMask.GetMask("wahtIsGround");
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
