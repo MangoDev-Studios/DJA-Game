@@ -15,9 +15,6 @@ public class PlayerCam : MonoBehaviour
 
     private void Start()
     {
-        Player = GameObject.Find("Player(Clone)");
-        orientation = Player.transform.GetChild(1).transform;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;   
     }

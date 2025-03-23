@@ -7,8 +7,7 @@ public class MoveCamera : MonoBehaviour
 
     private void Start()
     {
-        Player = GameObject.Find("Player(Clone)");
-        cameraPosition = Player.transform.GetChild(2).transform;
+
     }
     private void Update()
     {
