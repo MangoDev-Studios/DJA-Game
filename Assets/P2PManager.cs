@@ -18,6 +18,38 @@ public class P2P_Manager : MonoBehaviour
     private UdpClient testUdpListener;
     private bool isUdpPortAvailable = true;
 
+
+    // Add to your P2P_Manager script
+    [Header("Player Spawning")]
+    public GameObject playerPrefab;
+    public Transform[] spawnPoints;
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            Debug.Log($"Client connected: {clientId}");
+            SpawnPlayer(clientId);
+        }
+    }
+
+    private void SpawnPlayer(ulong clientId)
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        // Calculate spawn position (round-robin through spawn points)
+        int spawnIndex = (int)clientId % spawnPoints.Length;
+        Vector3 spawnPos = spawnPoints[spawnIndex].position;
+        Quaternion spawnRot = spawnPoints[spawnIndex].rotation;
+
+        // Instantiate and spawn the player
+        GameObject player = Instantiate(playerPrefab, spawnPos, spawnRot);
+        NetworkObject networkObject = player.GetComponent<NetworkObject>();
+        networkObject.SpawnAsPlayerObject(clientId, true);
+
+        Debug.Log($"Spawned player for client {clientId} at {spawnPos}");
+    }
+
     private void Start()
     {
         transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -113,17 +145,7 @@ public class P2P_Manager : MonoBehaviour
         Debug.Log("UDP Server started successfully!");
     }
 
-    private void OnClientConnected(ulong clientId)
-    {
-        if (NetworkManager.Singleton.IsHost)
-        {
-            Debug.Log($"Client connected via UDP: {clientId}");
-        }
-        else
-        {
-            Debug.Log("Successfully connected to UDP host");
-        }
-    }
+
 
     // Helper method to get local IP address
     public static string GetLocalIPAddress()
