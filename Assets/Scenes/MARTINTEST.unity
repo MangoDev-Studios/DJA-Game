@@ -1059,9 +1059,9 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 127.0.0.1
-    Port: 7777
-    ServerListenAddress: 127.0.0.1
+    Address: 0.0.0.0
+    Port: 25000
+    ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0
     PacketJitterMS: 0
@@ -1082,7 +1082,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1365658221}
-    PlayerPrefab: {fileID: 602713107}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 6879051dd72d5c146a6a3783c4186c65, type: 2}
@@ -1355,17 +1355,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1657404166836925448, guid: 0f1aea0e66e74e5469e28b867a0707a7, type: 3}
   m_PrefabInstance: {fileID: 1505557049}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1505557051 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6222263379070446761, guid: 0f1aea0e66e74e5469e28b867a0707a7, type: 3}
-  m_PrefabInstance: {fileID: 1505557049}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1505557052 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4881825361754052959, guid: 0f1aea0e66e74e5469e28b867a0707a7, type: 3}
@@ -1383,8 +1372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97da7e63d946b8c4b8eed511dd6967e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SoloButton: {fileID: 1505557051}
-  StartingMenuPrefab: {fileID: 1505557052}
 --- !u!1 &1582080897
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,7 +1560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ipInputField: {fileID: 576685962}
-  port: 7777
+  port: 25000
 --- !u!4 &1819501291 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5593063534165956425, guid: 3ceecb622d3be514480b1e44c62cbd60, type: 3}
