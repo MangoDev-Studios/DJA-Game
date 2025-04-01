@@ -1,30 +1,42 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerSpawnController : NetworkBehaviour
+public class ManualPlayerSpawner : MonoBehaviour
 {
+    [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform[] spawnPoints;
-    private bool hasInitialized = false;
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
-        if (IsServer && !hasInitialized)
+        // Disable all automatic spawning
+        ConfigureNetworkManager();
+        
+        // Register connection callbacks
+        NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+    }
+
+    private void ConfigureNetworkManager()
+    {
+        var config = NetworkManager.Singleton.NetworkConfig;
+        
+        config.PlayerPrefab = null; // Clear any assigned prefab
+        
+        // Optional: If using scene management
+        config.EnableSceneManagement = false;
+    }
+
+    private void OnServerStarted()
+    {
+        if (NetworkManager.Singleton.IsHost)
         {
-            // Host/Server spawns their own player first
-            if (IsHost)
-            {
-                SpawnPlayer(NetworkManager.Singleton.LocalClientId);
-            }
-            
-            // Then listen for client connections
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-            hasInitialized = true;
+            SpawnPlayer(NetworkManager.Singleton.LocalClientId);
         }
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        if (IsServer && clientId != NetworkManager.Singleton.LocalClientId)
+        if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsHost)
         {
             SpawnPlayer(clientId);
         }
@@ -33,27 +45,24 @@ public class PlayerSpawnController : NetworkBehaviour
     private void SpawnPlayer(ulong clientId)
     {
         int spawnIndex = (int)clientId % spawnPoints.Length;
-        Vector3 spawnPosition = spawnPoints[spawnIndex].position;
-        Quaternion spawnRotation = spawnPoints[spawnIndex].rotation;
-
-        GameObject playerInstance = Instantiate(
-            NetworkManager.Singleton.NetworkConfig.PlayerPrefab,
-            spawnPosition,
-            spawnRotation
+        GameObject player = Instantiate(
+            playerPrefab,
+            spawnPoints[spawnIndex].position,
+            spawnPoints[spawnIndex].rotation
         );
 
-        NetworkObject networkObject = playerInstance.GetComponent<NetworkObject>();
-        networkObject.SpawnAsPlayerObject(clientId);
-
-        Debug.Log($"Spawned player for client {clientId} at {spawnPosition}");
+        var netObj = player.GetComponent<NetworkObject>();
+        netObj.SpawnAsPlayerObject(clientId);
+        
+        Debug.Log($"Manually spawned player for client {clientId}");
     }
 
-    public override void OnDestroy()
+    private void OnDestroy()
     {
         if (NetworkManager.Singleton != null)
         {
+            NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
-        base.OnDestroy();
     }
 }

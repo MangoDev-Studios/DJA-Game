@@ -31,6 +31,8 @@ public class P2P_Manager : MonoBehaviour
 
     private void Start()
     {
+
+        NetworkManager.Singleton.NetworkConfig.PlayerPrefab = null; // Disable automatic player prefab spawning
         transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         if (transport == null)
         {
