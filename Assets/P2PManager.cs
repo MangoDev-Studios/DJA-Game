@@ -1,64 +1,90 @@
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
-using UnityEngine.UI;
 using TMPro;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System;
 
 public class P2P_Manager : MonoBehaviour
 {
     [Header("UI Elements")]
     public TMP_InputField ipInputField;
     public ushort port = 25000;
+    public TextMeshProUGUI connectionStatusText;
 
     private UnityTransport transport;
+    private UdpClient testUdpListener;
+    private bool isUdpPortAvailable = true;
 
     private void Start()
     {
-        // Initialize UI
-
-        // Get transport reference
         transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         if (transport == null)
         {
             Debug.LogError("UnityTransport component missing!");
-            Debug.Log("Error: Missing Transport");
             return;
         }
-
-        // Unity 6 specific initialization
-        transport.Initialize();
     }
 
     public void OnHostButtonClicked()
     {
-        if (NetworkManager.Singleton.IsListening)
+        if (!IsPortAvailable())
         {
-            Debug.LogWarning("Already hosting!");
+            UpdateStatus($"Port {port} is in use! Try another port.");
             return;
         }
 
-        // Configure transport for Unity 6
+        if (NetworkManager.Singleton.IsListening)
+        {
+            UpdateStatus("Already hosting!");
+            return;
+        }
+
+        // Configure transport
         transport.SetConnectionData(
             "0.0.0.0",  // Listen on all interfaces
-            port,       // Port number
-            "0.0.0.0"   // Default connect address
+            port,
+            "0.0.0.0"   // Explicit listen address
         );
 
-        // Setup callbacks
         NetworkManager.Singleton.OnServerStarted += OnServerStarted;
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
 
-        // Start host
         if (NetworkManager.Singleton.StartHost())
         {
-            Debug.Log($"Host started on {GetLocalIPAddress()}:{port}");
+            UpdateStatus($"Hosting on UDP port {port}\nLocal IP: {GetLocalIPAddress()}");
         }
         else
         {
-            Debug.LogError("Host failed to start!");
+            UpdateStatus("Host failed to start!");
         }
+    }
+
+    public bool IsPortAvailable()
+    {
+        try
+        {
+            // Test if port is available (but don't keep it open)
+            using (var testSocket = new UdpClient(port))
+            {
+                return true;
+            }
+        }
+        catch (SocketException)
+        {
+            return false;
+        }
+    }
+
+    // Optional: Continuously check if port is receiving data
+
+    private void UpdateStatus(string message)
+    {
+        Debug.Log(message);
+        if (connectionStatusText != null)
+            connectionStatusText.text = message;
     }
 
     public void OnJoinButtonClicked()
@@ -66,6 +92,7 @@ public class P2P_Manager : MonoBehaviour
         string targetIP = ipInputField.text.Trim();
         if (string.IsNullOrEmpty(targetIP))
         {
+            Debug.LogWarning("Please enter a valid IP address");
             return;
         }
 
@@ -73,7 +100,7 @@ public class P2P_Manager : MonoBehaviour
 
         if (NetworkManager.Singleton.StartClient())
         {
-            Debug.Log($"Client started to connect to {targetIP}:{port}");
+            Debug.Log($"UDP Client started to connect to {targetIP}:{port}");
         }
         else
         {
@@ -83,18 +110,18 @@ public class P2P_Manager : MonoBehaviour
 
     private void OnServerStarted()
     {
-        Debug.Log("Server started successfully!");
+        Debug.Log("UDP Server started successfully!");
     }
 
     private void OnClientConnected(ulong clientId)
     {
         if (NetworkManager.Singleton.IsHost)
         {
-            Debug.Log($"Client connected: {clientId}");
+            Debug.Log($"Client connected via UDP: {clientId}");
         }
         else
         {
-            Debug.Log("Successfully connected to host");
+            Debug.Log("Successfully connected to UDP host");
         }
     }
 
@@ -112,19 +139,5 @@ public class P2P_Manager : MonoBehaviour
         return "127.0.0.1";
     }
 
-    // Debug method to test raw socket binding
-    public void TestPortAvailability()
-    {
-        try
-        {
-            TcpListener listener = new TcpListener(IPAddress.Any, port);
-            listener.Start();
-            listener.Stop();
-            Debug.Log($"Port {port} is available!");
-        }
-        catch (SocketException e)
-        {
-            Debug.LogError($"Port {port} in use: {e.Message}");
-        }
-    }
+    // Debug method to test UDP port availability
 }
